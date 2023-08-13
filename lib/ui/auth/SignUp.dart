@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/utils/utils.dart';
 import 'package:todo_app/widgets/RoundButton.dart';
-
 import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -11,6 +12,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUp extends State<SignUp> {
+  bool loading = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -54,7 +57,7 @@ class _SignUp extends State<SignUp> {
                         ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Enter email';
                         }
                         return null;
@@ -81,7 +84,7 @@ class _SignUp extends State<SignUp> {
                         ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Enter password';
                         }
                         return null;
@@ -94,8 +97,27 @@ class _SignUp extends State<SignUp> {
             ),
             RoundButton(
               "Sign Up",
+              loading,
               () {
-                if (_formKey.currentState!.validate()) {}
+                if (_formKey.currentState!.validate()) {
+                  setState(() {
+                    loading = true;
+                  });
+                  auth
+                      .createUserWithEmailAndPassword(
+                          email: emailController.text.toString(),
+                          password: passwordController.text.toString())
+                      .then((value) {
+                    setState(() {
+                      loading = false;
+                    });
+                  }).onError((error, stackTrace) {
+                    Utils().toastMessage(error.toString());
+                    setState(() {
+                      loading = false;
+                    });
+                  });
+                }
               },
             ),
             SizedBox(
@@ -106,12 +128,10 @@ class _SignUp extends State<SignUp> {
               children: [
                 Text("Already have an account?"),
                 TextButton(
-                  
                     onPressed: () => {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Login())),
                         },
-                        
                     child: Text(
                       "Login",
                       style: TextStyle(

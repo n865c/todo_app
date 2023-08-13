@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:todo_app/screens/todo_list.dart';
+import 'package:todo_app/utils/utils.dart';
 import 'package:todo_app/widgets/RoundButton.dart';
 
 import 'SignUp.dart';
@@ -12,9 +15,11 @@ class Login extends StatefulWidget {
 }
 
 class _Login extends State<Login> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool loading = false;
   @override
   void dispose() {
     super.dispose();
@@ -101,8 +106,27 @@ class _Login extends State<Login> {
               ),
               RoundButton(
                 "Login",
+                loading,
                 () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      loading = true;
+                    });
+                    auth
+                        .signInWithEmailAndPassword(
+                            email: emailController.text.toString(),
+                            password: passwordController.text.toString())
+                        .then((value) {
+                      Utils().toastMessage(value.user!.email.toString());
+                      setState(() {
+                        loading = false;
+                      });
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Mytodo()));
+                    }).onError((error, stackTrace) {
+                      Utils().toastMessage(error.toString());
+                    });
+                  }
                 },
               ),
               SizedBox(
