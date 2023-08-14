@@ -35,7 +35,12 @@ class _MyaddlistState extends State<Myaddlist> {
         children: [
           TextField(
             controller: titleController,
+            cursorColor: Colors.grey,
             decoration: InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.grey), // Change the border color when focused
+              ),
               hintText: "Title",
             ),
           ),
@@ -45,9 +50,14 @@ class _MyaddlistState extends State<Myaddlist> {
           TextField(
             controller: descriptionController,
             keyboardType: TextInputType.multiline,
+            cursorColor: Colors.grey,
             minLines: 5,
             maxLines: 8,
             decoration: InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.grey), // Change the border color when focused
+              ),
               hintText: "Description",
             ),
           ),
@@ -62,8 +72,13 @@ class _MyaddlistState extends State<Myaddlist> {
               else
                 submit();
             },
-            style: ElevatedButton.styleFrom(padding: EdgeInsets.all(15)),
-            child: widget.isEdit ? Text("Update") : Text("Submit"),
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(15), backgroundColor: Colors.black),
+            child: widget.isEdit
+                ? Text(
+                    "Update",
+                  )
+                : Text("Submit"),
           ),
         ],
       ),

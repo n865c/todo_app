@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/add_list.dart';
 import 'package:http/http.dart' as http;
+import 'package:todo_app/ui/auth/login.dart';
+import 'package:todo_app/utils/utils.dart';
 
 class Mytodo extends StatefulWidget {
   const Mytodo({super.key});
@@ -14,6 +17,7 @@ class Mytodo extends StatefulWidget {
 class _MytodoState extends State<Mytodo> {
   var items = [];
   bool isloading = true;
+  final auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -26,6 +30,18 @@ class _MytodoState extends State<Mytodo> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                auth.signOut().then((value) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                }).onError((error, stackTrace) {
+                  Utils().toastMessage(error.toString(), false);
+                });
+              },
+              icon: Icon(Icons.logout_outlined))
+        ],
         title: Text("Todo list"),
       ),
       body: Visibility(
