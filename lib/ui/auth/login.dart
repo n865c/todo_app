@@ -117,14 +117,17 @@ class _Login extends State<Login> {
                             email: emailController.text.toString(),
                             password: passwordController.text.toString())
                         .then((value) {
-                      Utils().toastMessage(value.user!.email.toString());
+                      Utils().toastMessage(value.user!.email.toString(), true);
                       setState(() {
                         loading = false;
                       });
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Mytodo()));
                     }).onError((error, stackTrace) {
-                      Utils().toastMessage(error.toString());
+                      setState(() {
+                        loading = false;
+                      });
+                      Utils().toastMessage(error.toString(), false);
                     });
                   }
                 },

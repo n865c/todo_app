@@ -112,7 +112,7 @@ class _SignUp extends State<SignUp> {
                       loading = false;
                     });
                   }).onError((error, stackTrace) {
-                    Utils().toastMessage(error.toString());
+                    Utils().toastMessage(error.toString(),false);
                     setState(() {
                       loading = false;
                     });
